@@ -27,3 +27,35 @@ The bare minimum components that go files must have are `package` and `func`.
 **package and func main** every time a new package is created, these two pieces are mandatory - they act as the entry point for the entire application.
 
 Running go: `go run main.go`
+
+_by design, go applications can have multiple entry points (mains). It allows multiple microservices defined like in a list. The only requirement is that they are in separate directories. `go run {subPath}/main.go`_
+
+### Variables
+
+Explicit declaration:
+
+```go
+    var name string = "Mary"
+```
+
+Implicit declaration (type inferred):
+
+```go
+    name := "Mary"
+    age := 20
+    total := 10.0
+```
+
+**Zero value concept:**
+
+Go has the concept of zero value, which means that declared but not assigned variables have default values (some data structure does equate to `nil`):
+
+```go
+    var myText string
+    var myBool bool
+    var myInt int
+
+    fmt.Printf("My text %s, my bool %t my int %d\n", myText, myBool, myInt)
+```
+
+This will print `My text  , my bool false, my int 0`
