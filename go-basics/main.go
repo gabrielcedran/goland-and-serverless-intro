@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"goBasics/circle"
 	"goBasics/tickets"
 )
 
@@ -14,4 +15,8 @@ func main() {
 	}
 	newTicket.PrintEvent()
 
+	myCircle := circle.Circle{Radius: 12.0}
+	myCircle.CalculcateCircumference()
+	fmt.Println(myCircle.Circumference)
+	myCircle.Area()
 }
