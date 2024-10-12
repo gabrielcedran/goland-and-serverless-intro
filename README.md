@@ -106,3 +106,44 @@ Go has only `for` loops. However it's possible to use it in a `do... while` fash
 		fmt.Println(index)
 	}
 ```
+
+### Structs
+
+The simplest definition is a type that holds data and allows that data to be passed around applications. Along with interfaces, it's also Go's solution to OOP.
+
+_go does not have a concept of classes and chooses composition over inheritance_
+
+When instantiating the struct, Go doesn't force you to provide all the values due to the zero value approach.
+
+#### Receivers
+
+It's like class methods in other programming languages (Textbook definition: a method implemented on a type).
+
+This is where the composition over inheritance comes from in Go as it's possible to compose structs with different structs.
+
+### Pointers and References
+
+Go passes variables and structs either as copy or reference. To pass as reference, simply prefix the parameter type with `*`.
+
+In order to check the allocated memory address for any variable, just use ampersand `&varName`.
+
+#### Declaring variables as pointers
+
+To declare a variable as a pointer to the memory address, just use ampersand:
+
+```go
+    a = 1
+    b := &a
+
+    fmt.Println(b) // prints the memory address
+```
+
+To change the value of `b` (the value stored in that memory address), it's necessary to do what is called `dereferencing`:
+
+```go
+
+    *b = 10
+    fmt.Println(*b)
+    // here a is also 9 - b is pointing to the memory address that a is also pointing
+
+```
