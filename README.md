@@ -147,3 +147,24 @@ To change the value of `b` (the value stored in that memory address), it's neces
     // here a is also 9 - b is pointing to the memory address that a is also pointing
 
 ```
+
+## AWS and CDK (Cloud Development Kit)
+
+CDK is a open-source framework built by AWS which allows developers to define infrastructure as code (avoiding having to go to aws dashboard / ui).
+
+CDK uses CloudFormation service in order to provision the necessary infra. CloudFormation basically uses flat file templates to define what needs to be created (CDK Code -> Cloud Formation -> Rest of AWS suite).
+
+### Initiating a CDK project
+
+`cdk init app --language go`
+
+`go get` to download the dependencies
+
+**notes:**
+
+1. jsii is a framework built by aws to transpile other programming languages into typescript - to allow them to communicate with typescript, which is the native language of aws (when creating a project in TS, it's not necessary)
+2. `defer` in go means "execute this line of code within this function (scope) after everything else has finished"
+3. `app` is the base component where all the other pieces of infrastructure is bound (where the app came from, where it was deployed to, etc) - it's applies a concept of `constructs`.
+4. `stack` is a collection of individual infrastructure (AWS Lamnda, AWS DynamoDB, API Gateway, etc) - it's bound to the app
+
+_apps can have multiple stacks and multiple resources_
