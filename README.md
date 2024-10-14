@@ -166,5 +166,26 @@ CDK uses CloudFormation service in order to provision the necessary infra. Cloud
 2. `defer` in go means "execute this line of code within this function (scope) after everything else has finished"
 3. `app` is the base component where all the other pieces of infrastructure is bound (where the app came from, where it was deployed to, etc) - it's applies a concept of `constructs`.
 4. `stack` is a collection of individual infrastructure (AWS Lamnda, AWS DynamoDB, API Gateway, etc) - it's bound to the app
+5. `env` is the env variable to configure the application
 
 _apps can have multiple stacks and multiple resources_
+
+### Lambdas
+
+_Lambda is a serverless compute service that is triggered by an event (API Gateway, S3, etc). It automatically handles scaling and abstracts a lot of the complexity of using a server-based architecture._
+
+To create a new lambda:
+
+1. create a new directory and init it as a regular go module `go mod init {module_name}`
+2. add the dependency to aws lambda lib for go: `go get github.com/aws/aws-lambda-go/lambda`
+3. create the handler function and then pass it as the parameter to the `lambda.Start` function
+4. in the cdk config, add the created lambda to the stack.
+
+_for more details check the commit_
+
+To deploy:
+
+1. build the project with the command `GOOS=linux GOARCH=amd64 go build -o bootstrap` (this is a hard requirement from AL runtime "Amazon Linux") _the bootstrap artifact is actually an executable_
+2. zip the binary generated app (bootstrap) `zip function.zip bootstrap` - function.zip is an arbitrary name, but it has to match the name defined in the stack resource.
+3. `cdk diff`
+4. `cdk deploy`
