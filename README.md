@@ -183,6 +183,8 @@ To create a new lambda:
 
 _for more details check the commit_
 
+_to ease development, create a Makefile with the process to create the bootstrap executation and then zip it_
+
 To deploy:
 
 1. build the project with the command `GOOS=linux GOARCH=amd64 go build -o bootstrap` (this is a hard requirement from AL runtime "Amazon Linux") _the bootstrap artifact is actually an executable_
