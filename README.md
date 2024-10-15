@@ -170,6 +170,10 @@ CDK uses CloudFormation service in order to provision the necessary infra. Cloud
 
 _apps can have multiple stacks and multiple resources_
 
+#### Local development environment
+
+It's hard to spin up a local development environment, however it's feasible. There are some tools meant to ease this process like [SST](https://v2.sst.dev/live-lambda-development) ([other resources](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-debugging.html))
+
 ### Lambdas
 
 _Lambda is a serverless compute service that is triggered by an event (API Gateway, S3, etc). It automatically handles scaling and abstracts a lot of the complexity of using a server-based architecture._
@@ -191,3 +195,14 @@ To deploy:
 2. zip the binary generated app (bootstrap) `zip function.zip bootstrap` - function.zip is an arbitrary name, but it has to match the name defined in the stack resource.
 3. `cdk diff`
 4. `cdk deploy`
+
+### DynamoDB
+
+It's a fully managed NoSQL (key-value storage) database.
+
+Set up:
+
+1. add the dependency `go get github.com/aws/aws-sdk-go/service/dynamodb`
+2. add the session dependency `go get github.com/aws/aws-sdk-go/aws/session`
+
+_Amazon has a concept of session when interacting with different infrastructure/service._
