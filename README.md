@@ -148,6 +148,22 @@ To change the value of `b` (the value stored in that memory address), it's neces
 
 ```
 
+### Interfaces
+
+An interface is a collection of method signatures.
+
+Example of declaration:
+
+```go
+type UserStore interface {
+	DoesUserExist(username string) (bool, error)
+	InsertUser(User types.RegisterUser) error
+}
+```
+
+In Go, there is no need to have anything implementing that interface. Instead, it's just a matter of having structs satifying the interface's definition (with receivers) and then they can be used directly
+(somewhat how typescript relies on structural types rather than nominal types).
+
 ## AWS and CDK (Cloud Development Kit)
 
 CDK is a open-source framework built by AWS which allows developers to define infrastructure as code (avoiding having to go to aws dashboard / ui).
