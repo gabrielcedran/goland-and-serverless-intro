@@ -204,5 +204,10 @@ Set up:
 
 1. add the dependency `go get github.com/aws/aws-sdk-go/service/dynamodb`
 2. add the session dependency `go get github.com/aws/aws-sdk-go/aws/session`
+3. create and add the necessary tables into the stack (refer to `user-registration.go`)
+4. grant permission to the lambda function to access the tables (refer to `user-registration.go`)
+5. create session and necessary logic (refer to `database.go`)
 
 _Amazon has a concept of session when interacting with different infrastructure/service._
+
+_To view the table's content, open amazon console -> DynamoDB -> Tables -> Look for the table -> Explore table items (top right corner)_
