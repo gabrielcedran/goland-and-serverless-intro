@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/aws/aws-cdk-go/awscdk/v2"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awsapigateway"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsdynamodb"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
 
@@ -38,6 +39,27 @@ func NewUserRegistrationStack(scope constructs.Construct, id string, props *User
 	})
 
 	userTable.GrantReadWriteData(registrationFunction) // even tho the lambda func and the table exist in the same stack, the function needs explicit permission to access the table
+
+	api := awsapigateway.NewRestApi(stack, jsii.String("UserRegistrationGateway"), &awsapigateway.RestApiProps{
+		DefaultCorsPreflightOptions: &awsapigateway.CorsOptions{
+			AllowHeaders: jsii.Strings("Content-Type", "Authorization"),
+			AllowMethods: jsii.Strings("GET", "POST", "DELETE", "PUT", "OPTIONS"),
+			AllowOrigins: jsii.Strings("*"), // just for studies purposes
+		},
+		DeployOptions: &awsapigateway.StageOptions{
+			LoggingLevel: awsapigateway.MethodLoggingLevel_INFO, // in case it doesn't hit the BE for any reason (e.g cors) you wanna be able to investigate
+		},
+	})
+
+	lambdaIntegration := awsapigateway.NewLambdaIntegration(registrationFunction, nil)
+
+	// create user route
+	registerRoute := api.Root().AddResource(jsii.String("/register"), nil)
+	registerRoute.AddMethod(jsii.String("POST"), lambdaIntegration, nil)
+
+	// login route
+	loginRoute := api.Root().AddResource(jsii.String("/login"), nil)
+	loginRoute.AddMethod(jsii.String("POST"), lambdaIntegration, nil)
 
 	return stack
 }

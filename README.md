@@ -227,3 +227,14 @@ Set up:
 _Amazon has a concept of session when interacting with different infrastructure/service._
 
 _To view the table's content, open amazon console -> DynamoDB -> Tables -> Look for the table -> Explore table items (top right corner)_
+
+### API Gateway
+
+Besides working as an entry point and routing, api gateway also has some security features like config to only accept requests from one region (or not from one region).
+
+Set up:
+
+1. ~add the dependency `github.com/aws/aws-sdk-go/service/apigateway`~ _apparently not necessary due to the cdk sdk having already been added?_
+2. create a new api gateway resource and add it to the stac (refer to `user-registration.go`)
+3. create an api lambda integration and assign the lambda (refer to `user-registration.go`)
+4. create a new route, define details (path, method, etc) and assign the api lambda integration that we created in the previous step (refer to `user-registration.go`)
