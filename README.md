@@ -238,3 +238,7 @@ Set up:
 2. create a new api gateway resource and add it to the stac (refer to `user-registration.go`)
 3. create an api lambda integration and assign the lambda (refer to `user-registration.go`)
 4. create a new route, define details (path, method, etc) and assign the api lambda integration that we created in the previous step (refer to `user-registration.go`)
+
+#### Cloudwatch logging errors
+
+In case there is cloudwatch log error during the deploy (especially if the option `LoggingLevel: awsapigateway.MethodLoggingLevel_INFO` was set), follow this [troubleshooting page](https://repost.aws/knowledge-center/api-gateway-cloudwatch-logs)

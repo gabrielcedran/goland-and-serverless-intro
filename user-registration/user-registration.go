@@ -54,11 +54,11 @@ func NewUserRegistrationStack(scope constructs.Construct, id string, props *User
 	lambdaIntegration := awsapigateway.NewLambdaIntegration(registrationFunction, nil)
 
 	// create user route
-	registerRoute := api.Root().AddResource(jsii.String("/register"), nil)
+	registerRoute := api.Root().AddResource(jsii.String("register"), nil)
 	registerRoute.AddMethod(jsii.String("POST"), lambdaIntegration, nil)
 
 	// login route
-	loginRoute := api.Root().AddResource(jsii.String("/login"), nil)
+	loginRoute := api.Root().AddResource(jsii.String("login"), nil)
 	loginRoute.AddMethod(jsii.String("POST"), lambdaIntegration, nil)
 
 	return stack
