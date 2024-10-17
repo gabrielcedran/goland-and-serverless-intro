@@ -1,9 +1,13 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"user-registration/database"
 	"user-registration/types"
+
+	"github.com/aws/aws-lambda-go/events"
 )
 
 type ApiHandler struct {
@@ -16,26 +20,99 @@ func NewApiHandler(dbStore database.UserStore) ApiHandler {
 	}
 }
 
-func (api ApiHandler) RegisterUserHandler(event types.RegisterUser) error {
-	if event.Username == "" || event.Password == "" {
-		return fmt.Errorf("request has empty parameters")
-	}
+func (api ApiHandler) RegisterUserHandler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	var registerUser types.RegisterUser
 
-	userExists, err := api.dbStore.DoesUserExist(event.Username)
+	err := json.Unmarshal([]byte(request.Body), &registerUser)
 
 	if err != nil {
-		return fmt.Errorf("there was an error checking if error exists %w", err)
+		return events.APIGatewayProxyResponse{
+			Body:       "invalid Request",
+			StatusCode: http.StatusBadRequest,
+		}, err // the first content is returned to the end user, the second (err) goes to cloud watch
+	}
+
+	if registerUser.Username == "" || registerUser.Password == "" {
+		return events.APIGatewayProxyResponse{
+			Body:       "invalid request",
+			StatusCode: http.StatusBadRequest,
+		}, err
+	}
+
+	userExists, err := api.dbStore.DoesUserExist(registerUser.Username)
+
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			Body:       "internal server error",
+			StatusCode: http.StatusInternalServerError,
+		}, err
 	}
 
 	if userExists {
-		return fmt.Errorf("a user with that username already exists")
+		return events.APIGatewayProxyResponse{
+			Body:       "User already exists",
+			StatusCode: http.StatusConflict,
+		}, nil
 	}
 
-	err = api.dbStore.InsertUser(event)
+	user, err := types.NewUser(registerUser)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			Body:       "internal server error",
+			StatusCode: http.StatusInternalServerError,
+		}, fmt.Errorf("could not create user %w", err)
+	}
+
+	err = api.dbStore.InsertUser(*user)
 
 	if err != nil {
-		return fmt.Errorf("there was an error registering the user %w", err)
+		return events.APIGatewayProxyResponse{
+			Body:       "Internal server gatewar",
+			StatusCode: http.StatusInternalServerError,
+		}, fmt.Errorf("Error inserting user - %w", err)
 	}
 
-	return nil
+	return events.APIGatewayProxyResponse{
+		Body:       "sucessfully registered user",
+		StatusCode: http.StatusCreated,
+	}, nil
+}
+
+func (api ApiHandler) LoginUser(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	type LoginRequest struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	var loginRequest LoginRequest
+
+	err := json.Unmarshal([]byte(request.Body), &loginRequest)
+
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			Body:       "invalid request",
+			StatusCode: http.StatusBadRequest,
+		}, err
+	}
+
+	user, err := api.dbStore.GetUser(loginRequest.Username)
+
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			Body:       "internal server error",
+			StatusCode: http.StatusInternalServerError,
+		}, err
+	}
+
+	if !types.ValidatePassword(user.PasswordHash, loginRequest.Password) {
+		return events.APIGatewayProxyResponse{
+			Body:       "Invalid user credentials",
+			StatusCode: http.StatusUnauthorized,
+		}, nil
+	}
+
+	return events.APIGatewayProxyResponse{
+		Body:       "Successfully logged in",
+		StatusCode: http.StatusOK,
+	}, nil
 }
