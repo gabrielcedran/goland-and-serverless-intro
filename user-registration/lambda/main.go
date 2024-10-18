@@ -3,10 +3,18 @@ package main
 import (
 	"net/http"
 	"user-registration/app"
+	"user-registration/middleware"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
+
+func ProtectedHanlder(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	return events.APIGatewayProxyResponse{
+		Body:       "this is a secret path",
+		StatusCode: http.StatusOK,
+	}, nil
+}
 
 func main() {
 	myApp := app.NewApp()
@@ -19,6 +27,8 @@ func main() {
 			return myApp.ApiHandler.RegisterUserHandler(request)
 		case "/login":
 			return myApp.ApiHandler.LoginUser(request)
+		case "/protected":
+			return middleware.ValidateJWTMiddleware(ProtectedHanlder)(request)
 		default:
 			return events.APIGatewayProxyResponse{
 				Body:       "Not found",

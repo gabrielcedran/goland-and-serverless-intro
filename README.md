@@ -242,3 +242,11 @@ Set up:
 #### Cloudwatch logging errors
 
 In case there is cloudwatch log error during the deploy (especially if the option `LoggingLevel: awsapigateway.MethodLoggingLevel_INFO` was set), follow this [troubleshooting page](https://repost.aws/knowledge-center/api-gateway-cloudwatch-logs)
+
+### JWT
+
+It contains specific information of the person / system sending the request so that the receiving counter part can validate.
+It consists of 3 parts: header (algorithm used to create and has the jwt), payload and signature (insures the jtw issurer).
+[Reference](https://medium.com/@cheickzida/golang-implementing-jwt-token-authentication-bba9bfd84d60) for implementation in go.
+
+Dependency: `go get github.com/golang-jwt/jwt/v5`

@@ -61,6 +61,10 @@ func NewUserRegistrationStack(scope constructs.Construct, id string, props *User
 	loginRoute := api.Root().AddResource(jsii.String("login"), nil)
 	loginRoute.AddMethod(jsii.String("POST"), lambdaIntegration, nil)
 
+	// protected route
+	protectedRoute := api.Root().AddResource(jsii.String("protected"), nil)
+	protectedRoute.AddMethod(jsii.String("GET"), lambdaIntegration, nil)
+
 	return stack
 }
 
